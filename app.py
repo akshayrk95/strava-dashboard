@@ -306,7 +306,6 @@ CHART_CONFIG = dict(
     paper_bgcolor="rgba(0,0,0,0)",
     plot_bgcolor="rgba(0,0,0,0)",
     font=dict(family="JetBrains Mono", color=muted, size=11),
-    margin=dict(l=0, r=0, t=10, b=0),
     showlegend=True,
     legend=dict(font=dict(color=muted, size=10), bgcolor="rgba(0,0,0,0)"),
 )
@@ -408,9 +407,8 @@ def consistency_heatmap(activities):
     year_start = date(2026, 1, 1)
     active_dates = set(to_date(a) for a in activities)
 
-    # Build 7-row grid (Mon–Sun) × ~53 cols
     weeks = []
-    d = year_start - timedelta(days=year_start.weekday())  # start on Monday
+    d = year_start - timedelta(days=year_start.weekday())
     while d <= today + timedelta(days=6):
         week = []
         for i in range(7):
@@ -424,9 +422,9 @@ def consistency_heatmap(activities):
         weeks.append(week)
         d += timedelta(weeks=1)
 
-    z    = [[weeks[col][row] for col in range(len(weeks))] for row in range(7)]
-    x    = [str(i) for i in range(len(weeks))]
-    y    = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]
+    z = [[weeks[col][row] for col in range(len(weeks))] for row in range(7)]
+    x = [str(i) for i in range(len(weeks))]
+    y = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]
 
     colorscale = [
         [0.0, border],
@@ -443,14 +441,20 @@ def consistency_heatmap(activities):
         hovertemplate="<b>%{y}</b><extra></extra>",
         zmin=0, zmax=1,
     ))
+
     fig.update_layout(
         **CHART_CONFIG,
         height=160,
         xaxis=dict(showticklabels=False, showgrid=False, zeroline=False),
-        yaxis=dict(tickfont=dict(color=muted, size=9), showgrid=False,
-                   zeroline=False, side="left"),
-        margin=dict(l=30, r=0, t=10, b=0),
+        yaxis=dict(
+            tickfont=dict(color=muted, size=9),
+            showgrid=False,
+            zeroline=False,
+            side="left"
+        ),
+        margin=dict(l=30, r=0, t=10, b=0),  # ✅ now safe
     )
+
     return fig
 
 
@@ -670,7 +674,6 @@ def render_dashboard(data):
 # ENTRY POINT
 # ─────────────────────────────────────────────
 def main():
-    
 
     with st.spinner("Fetching your Strava data..."):
         data = load_all_data()
@@ -681,10 +684,7 @@ def main():
 
     render_dashboard(data)
 
-    # Auto-rerun every hour to pick up fresh cache
-    time.sleep(REFRESH_HOURS * 3600)
-    st.cache_data.clear()
-    st.rerun()
+    # ✅ Removed time.sleep() — Streamlit cache handles refresh
 
 
 if __name__ == "__main__":
