@@ -379,7 +379,10 @@ def activity_split_chart(type_counts):
     ))
     fig.update_layout(**CHART_CONFIG, height=220,
                       legend=dict(font=dict(color=muted, size=10),
-                                  bgcolor="rgba(0,0,0,0)", x=0.75, y=0.5))
+                                  bgcolor="rgba(0,0,0,0)",
+                                  orientation="v",
+                                  yanchor="middle", y=0.5,
+                                  xanchor="left", x=1.0))
     return fig
 
 
@@ -440,17 +443,13 @@ def consistency_heatmap(activities):
         hovertemplate="<b>%{y}</b><extra></extra>",
         zmin=0, zmax=1,
     ))
-    
-    # FIX: Create a custom config for this heatmap with different margins
-    heatmap_config = CHART_CONFIG.copy()
-    heatmap_config['margin'] = dict(l=30, r=0, t=10, b=0)
-    
     fig.update_layout(
-        **heatmap_config,
+        **CHART_CONFIG,
         height=160,
         xaxis=dict(showticklabels=False, showgrid=False, zeroline=False),
         yaxis=dict(tickfont=dict(color=muted, size=9), showgrid=False,
                    zeroline=False, side="left"),
+        margin=dict(l=30, r=0, t=10, b=0),
     )
     return fig
 
