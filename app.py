@@ -367,21 +367,31 @@ def monthly_combo_chart(monthly):
 def activity_split_chart(type_counts):
     labels = list(type_counts.keys())
     values = list(type_counts.values())
+
     colors = [orange, blue, green, "#ffaa00", "#c864ff", "#00bcd4",
               "#ff6b9d", "#a8edea", "#fed9b7"]
+
     fig = go.Figure(go.Pie(
-        labels=labels, values=values,
+        labels=labels,
+        values=values,
         hole=0.6,
         marker=dict(colors=colors[:len(labels)], line=dict(width=0)),
         textfont=dict(color=muted, size=10),
         hovertemplate="%{label}: <b>%{value}</b> (%{percent})<extra></extra>",
     ))
-    fig.update_layout(**CHART_CONFIG, height=220,
-                      legend=dict(font=dict(color=muted, size=10),
-                                  bgcolor="rgba(0,0,0,0)",
-                                  orientation="v",
-                                  yanchor="middle", y=0.5,
-                                  xanchor="left", x=1.0))
+
+    # 🔥 FIX: override legend safely
+    layout = dict(CHART_CONFIG)
+    layout["legend"] = dict(
+        font=dict(color=muted, size=10),
+        bgcolor="rgba(0,0,0,0)",
+        orientation="v",
+        yanchor="middle", y=0.5,
+        xanchor="left", x=1.0
+    )
+
+    fig.update_layout(**layout, height=220)
+
     return fig
 
 
