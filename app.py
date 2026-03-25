@@ -667,8 +667,7 @@ def render_dashboard(data):
 # ENTRY POINT
 # ─────────────────────────────────────────────
 def main():
-    if not check_password():
-        return
+    
 
     with st.spinner("Fetching your Strava data..."):
         data = load_all_data()
