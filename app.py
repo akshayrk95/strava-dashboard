@@ -440,13 +440,17 @@ def consistency_heatmap(activities):
         hovertemplate="<b>%{y}</b><extra></extra>",
         zmin=0, zmax=1,
     ))
+    
+    # FIX: Create a custom config for this heatmap with different margins
+    heatmap_config = CHART_CONFIG.copy()
+    heatmap_config['margin'] = dict(l=30, r=0, t=10, b=0)
+    
     fig.update_layout(
-        **CHART_CONFIG,
+        **heatmap_config,
         height=160,
         xaxis=dict(showticklabels=False, showgrid=False, zeroline=False),
         yaxis=dict(tickfont=dict(color=muted, size=9), showgrid=False,
                    zeroline=False, side="left"),
-        margin=dict(l=30, r=0, t=10, b=0),
     )
     return fig
 
@@ -667,7 +671,8 @@ def render_dashboard(data):
 # ENTRY POINT
 # ─────────────────────────────────────────────
 def main():
-    
+    if not check_password():
+        return
 
     with st.spinner("Fetching your Strava data..."):
         data = load_all_data()
